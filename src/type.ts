@@ -1,0 +1,15 @@
+export type LogLevel = "debug" | "info" | "warn" | "error";
+
+export type LogMetadata = Record<string, unknown>;
+
+export interface LoggerOptions {
+  service: string;
+  endpoint: string;
+}
+
+export interface LogPayload {
+  service: string;
+  level: LogLevel;
+  message: string;
+  metadata: LogMetadata;
+}
