@@ -23,6 +23,9 @@
     "logger",
     "observability",
     "backend",
+    "node",
+    "nodejs",
+    "typescript",
     "platypus"
   ],
   "author": "Felix Kamau",
