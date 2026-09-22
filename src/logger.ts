@@ -17,12 +17,15 @@ export class Logger {
   private async send(
     level: LogLevel,
     message: string,
+    request_id?: string,
     metadata: LogMetadata = {},
   ): Promise<void> {
     const payload: LogPayload = {
       service: this.service,
       level,
       message,
+      // request_id,
+      ...(request_id !== undefined && { request_id }),
       metadata,
     };
 
@@ -46,19 +49,35 @@ export class Logger {
     }
   }
 
-  debug(message: string, metadata?: LogMetadata): Promise<void> {
-    return this.send("debug", message, metadata);
+  debug(
+    message: string,
+    request_id?: string,
+    metadata?: LogMetadata,
+  ): Promise<void> {
+    return this.send("debug", message, request_id, metadata);
   }
 
-  info(message: string, metadata?: LogMetadata): Promise<void> {
-    return this.send("info", message, metadata);
+  info(
+    message: string,
+    request_id?: string,
+    metadata?: LogMetadata,
+  ): Promise<void> {
+    return this.send("info", message, request_id, metadata);
   }
 
-  warn(message: string, metadata?: LogMetadata): Promise<void> {
-    return this.send("warn", message, metadata);
+  warn(
+    message: string,
+    request_id?: string,
+    metadata?: LogMetadata,
+  ): Promise<void> {
+    return this.send("warn", message, request_id, metadata);
   }
 
-  error(message: string, metadata?: LogMetadata): Promise<void> {
-    return this.send("error", message, metadata);
+  error(
+    message: string,
+    request_id?: string,
+    metadata?: LogMetadata,
+  ): Promise<void> {
+    return this.send("error", message, request_id, metadata);
   }
 }

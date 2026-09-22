@@ -11,5 +11,6 @@ export interface LogPayload {
   service: string;
   level: LogLevel;
   message: string;
+  request_id?: string;
   metadata: LogMetadata;
 }
