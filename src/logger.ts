@@ -10,10 +10,12 @@ const PLATYPUS_ENDPOINT = "https://api.logplatypus.dev/api";
 export class Logger {
   private readonly service: string;
   private readonly endpoint: string;
+  private readonly apiKey: string;
 
   constructor(options: LoggerOptions) {
     this.service = options.service;
     this.endpoint = (options.endpoint ?? PLATYPUS_ENDPOINT).replace(/\/$/, "");
+    this.apiKey = options.apiKey;
   }
 
   private async send(
@@ -35,6 +37,7 @@ export class Logger {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${this.apiKey}`,
         },
         body: JSON.stringify(payload),
       });
@@ -45,7 +48,6 @@ export class Logger {
         );
       }
     } catch (error) {
-      // Logging should never crash the application.
       console.error("Platypus logging service unavailable:", error);
     }
   }

@@ -5,6 +5,7 @@ export type LogMetadata = Record<string, unknown>;
 export interface LoggerOptions {
   service: string;
   endpoint?: string;
+  apiKey: string;
 }
 
 export interface LogPayload {

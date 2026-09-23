@@ -2,7 +2,7 @@
 
 A lightweight structured logger for Node.js applications.
 
-Platypus provides simple logging with support for log levels, request IDs, and structured metadata. Logs are sent to the Platypus backend and can be viewed through the Platypus web interface.
+Platypus provides simple logging with support for log levels, request IDs, structured metadata, and API-key authentication. Logs are sent to the Platypus backend and can be viewed through the Platypus web interface.
 
 ## Installation
 
@@ -18,13 +18,14 @@ npm install @platypus/node
 
 ## Quick Start
 
-Create a logger with a service name:
+Create a logger with a service name and API key:
 
 ```ts
 import { createLogger } from "@platypus/node";
 
 const logger = createLogger({
   service: "my-api",
+  apiKey: process.env.PLATYPUS_API_KEY!,
 });
 ```
 
@@ -42,6 +43,8 @@ logger.warn("Rate limit approaching");
 logger.error("Database connection failed");
 ```
 
+> **Security:** Store your API key in an environment variable. Never commit API keys to your source code or version control.
+
 ## Request IDs
 
 Platypus supports request IDs to help trace individual requests across multiple log entries.
@@ -52,6 +55,7 @@ import { createLogger } from "@platypus/node";
 
 const logger = createLogger({
   service: "my-api",
+  apiKey: process.env.PLATYPUS_API_KEY!,
 });
 
 const requestId = randomUUID();
@@ -126,11 +130,12 @@ logger.error("Database connection failed", requestId);
 
 ## Configuration
 
-`createLogger` requires a `service` name. The `endpoint` is optional.
+`createLogger` requires a `service` name and an `apiKey`. The `endpoint` is optional.
 
 ```ts
 const logger = createLogger({
   service: "my-api",
+  apiKey: process.env.PLATYPUS_API_KEY!,
 });
 ```
 
@@ -144,6 +149,28 @@ service: "payments-api";
 
 The service name is used to identify and organize logs in the Platypus dashboard.
 
+### `apiKey`
+
+Authenticates your application with the Platypus backend.
+
+```ts
+apiKey: process.env.PLATYPUS_API_KEY!;
+```
+
+Store your API key securely in an environment variable:
+
+```env
+PLATYPUS_API_KEY=plat_xxxxxxxxxxxxxxxxx
+```
+
+The SDK sends the key using the `Authorization` header:
+
+```http
+Authorization: Bearer plat_xxxxxxxxxxxxxxxxx
+```
+
+Do not commit your API key to source control.
+
 ### `endpoint`
 
 The hosted Platypus backend endpoint is used by default.
@@ -153,6 +180,7 @@ For self-hosted deployments, you can provide your own Platypus backend endpoint:
 ```ts
 const logger = createLogger({
   service: "my-api",
+  apiKey: process.env.PLATYPUS_API_KEY!,
   endpoint: "http://localhost:3000/api",
 });
 ```
@@ -181,6 +209,7 @@ import { createLogger } from "@platypus/node";
 
 const logger = createLogger({
   service: "platypus-hono-demo",
+  apiKey: process.env.PLATYPUS_API_KEY!,
 });
 
 const app = new Hono();
@@ -222,6 +251,7 @@ const app = express();
 
 const logger = createLogger({
   service: "platypus-express-demo",
+  apiKey: process.env.PLATYPUS_API_KEY!,
 });
 
 app.get("/", (req, res) => {
@@ -257,6 +287,7 @@ const app = express();
 
 const logger = createLogger({
   service: "platypus-express-demo",
+  apiKey: process.env.PLATYPUS_API_KEY!,
 });
 
 app.use((req, res, next) => {
@@ -311,7 +342,6 @@ The dashboard can be used to:
 
 Planned features may include:
 
-- API key authentication
 - Project-based log isolation
 - Improved self-hosting support
 - Additional Node.js integrations
