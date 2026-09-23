@@ -5,13 +5,15 @@ import type {
   LogPayload,
 } from "./type.js";
 
+const PLATYPUS_ENDPOINT = "https://api.logplatypus.dev/api";
+
 export class Logger {
   private readonly service: string;
   private readonly endpoint: string;
 
   constructor(options: LoggerOptions) {
     this.service = options.service;
-    this.endpoint = options.endpoint.replace(/\/$/, "");
+    this.endpoint = (options.endpoint ?? PLATYPUS_ENDPOINT).replace(/\/$/, "");
   }
 
   private async send(
@@ -24,7 +26,6 @@ export class Logger {
       service: this.service,
       level,
       message,
-      // request_id,
       ...(request_id !== undefined && { request_id }),
       metadata,
     };
