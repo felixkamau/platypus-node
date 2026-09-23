@@ -2,7 +2,7 @@
 
 A lightweight structured logger for Node.js applications.
 
-Platypus provides simple logging with support for log levels, request IDs, and structured metadata.
+Platypus provides simple logging with support for log levels, request IDs, and structured metadata. Logs are sent to the Platypus backend and can be viewed through the Platypus web interface.
 
 ## Installation
 
@@ -18,16 +18,17 @@ npm install @platypus/node
 
 ## Quick Start
 
-Create a logger with a service name and logging endpoint:
+Create a logger with a service name:
 
 ```ts
 import { createLogger } from "@platypus/node";
 
 const logger = createLogger({
   service: "my-api",
-  endpoint: "",
 });
 ```
+
+The Platypus backend endpoint is managed by the SDK by default, so you do not need to configure it manually.
 
 You can then write logs using the available log levels:
 
@@ -51,7 +52,6 @@ import { createLogger } from "@platypus/node";
 
 const logger = createLogger({
   service: "my-api",
-  endpoint: "",
 });
 
 const requestId = randomUUID();
@@ -74,6 +74,12 @@ requestId=req_123 Processing request
 requestId=req_123 Request completed
 ```
 
+Request IDs are optional. You can also create logs without one:
+
+```ts
+logger.info("Server started");
+```
+
 ## Structured Logging
 
 Attach additional metadata to your log entries:
@@ -86,6 +92,14 @@ logger.info("User authenticated", requestId, {
 ```
 
 Structured metadata keeps contextual information separate from the log message and makes logs easier to process and inspect.
+
+You can also attach metadata without a request ID:
+
+```ts
+logger.info("Server started", undefined, {
+  port: 3000,
+});
+```
 
 ## Log Levels
 
@@ -112,12 +126,11 @@ logger.error("Database connection failed", requestId);
 
 ## Configuration
 
-`createLogger` requires both `service` and `endpoint`.
+`createLogger` requires a `service` name. The `endpoint` is optional.
 
 ```ts
 const logger = createLogger({
   service: "my-api",
-  endpoint: "",
 });
 ```
 
@@ -126,21 +139,34 @@ const logger = createLogger({
 Identifies the application or service producing the logs.
 
 ```ts
-service: "payments-api"
+service: "payments-api";
 ```
+
+The service name is used to identify and organize logs in the Platypus dashboard.
 
 ### `endpoint`
 
-Specifies the endpoint used by Platypus for log delivery.
+The hosted Platypus backend endpoint is used by default.
+
+For self-hosted deployments, you can provide your own Platypus backend endpoint:
 
 ```ts
-endpoint: "https://example.com/logs"
+const logger = createLogger({
+  service: "my-api",
+  endpoint: "http://localhost:3000/api",
+});
 ```
 
-For local development or when no remote endpoint is being used:
+The SDK sends logs to:
 
-```ts
-endpoint: ""
+```text
+{endpoint}/v1/logs
+```
+
+For example:
+
+```text
+http://localhost:3000/api/v1/logs
 ```
 
 ## Hono Example
@@ -155,7 +181,6 @@ import { createLogger } from "@platypus/node";
 
 const logger = createLogger({
   service: "platypus-hono-demo",
-  endpoint: "",
 });
 
 const app = new Hono();
@@ -197,7 +222,6 @@ const app = express();
 
 const logger = createLogger({
   service: "platypus-express-demo",
-  endpoint: "",
 });
 
 app.get("/", (req, res) => {
@@ -233,7 +257,6 @@ const app = express();
 
 const logger = createLogger({
   service: "platypus-express-demo",
-  endpoint: "",
 });
 
 app.use((req, res, next) => {
@@ -270,6 +293,29 @@ The middleware allows you to follow a request from start to completion using the
 requestId=req_123 Request started
 requestId=req_123 Request completed
 ```
+
+## Viewing Logs
+
+Logs sent by the Node.js SDK are received by the Platypus backend and made available through the Platypus web interface.
+
+The dashboard can be used to:
+
+- View application logs
+- Filter logs by service
+- Filter by log level
+- Search log messages
+- Follow requests using request IDs
+- Inspect structured metadata
+
+## Future Improvements
+
+Planned features may include:
+
+- API key authentication
+- Project-based log isolation
+- Improved self-hosting support
+- Additional Node.js integrations
+- More advanced log filtering and search
 
 ## TypeScript
 
