@@ -1,4 +1,4 @@
-# logplatypus-node
+# @devkamau/logplatypus-node
 
 A lightweight structured logger for Node.js applications.
 
@@ -7,13 +7,13 @@ Platypus provides simple logging with support for log levels, request IDs, struc
 ## Installation
 
 ```bash
-pnpm add logplatypus-node
+pnpm add @devkamau/logplatypus-node
 ```
 
 or:
 
 ```bash
-npm install logplatypus-node
+npm install @devkamau/logplatypus-node
 ```
 
 ## Quick Start
@@ -21,7 +21,7 @@ npm install logplatypus-node
 Create a logger with a service name and API key:
 
 ```ts
-import { createLogger } from "logplatypus-node";
+import { createLogger } from "@devkamau/logplatypus-node";
 
 const logger = createLogger({
   service: "my-api",
@@ -51,7 +51,7 @@ Platypus supports request IDs to help trace individual requests across multiple 
 
 ```ts
 import { randomUUID } from "node:crypto";
-import { createLogger } from "logplatypus-node";
+import { createLogger } from "@devkamau/logplatypus-node";
 
 const logger = createLogger({
   service: "my-api",
@@ -205,7 +205,7 @@ Platypus can be used with Node.js frameworks such as Hono.
 import { randomUUID } from "node:crypto";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { createLogger } from "logplatypus-node";
+import { createLogger } from "@devkamau/logplatypus-node";
 
 const logger = createLogger({
   service: "platypus-hono-demo",
@@ -245,7 +245,7 @@ Platypus can also be used with Express applications.
 ```ts
 import { randomUUID } from "node:crypto";
 import express from "express";
-import { createLogger } from "logplatypus-node";
+import { createLogger } from "@devkamau/logplatypus-node";
 
 const app = express();
 
@@ -281,7 +281,7 @@ For applications that want to log every incoming request, you can use Platypus i
 ```ts
 import { randomUUID } from "node:crypto";
 import express from "express";
-import { createLogger } from "logplatypus-node";
+import { createLogger } from "@devkamau/logplatypus-node";
 
 const app = express();
 
@@ -352,7 +352,7 @@ Planned features may include:
 Platypus is written in TypeScript and includes TypeScript declarations.
 
 ```ts
-import { createLogger } from "logplatypus-node";
+import { createLogger } from "@devkamau/logplatypus-node";
 ```
 
 No additional type package is required.
