@@ -5,17 +5,42 @@ import type {
   LogPayload,
 } from "./type.js";
 
-const PLATYPUS_ENDPOINT = "https://api.logplatypus.dev/api";
+const DEFAULT_ENDPOINT =
+  (typeof process !== "undefined" && process.env?.PLATYPUS_ENDPOINT) ||
+  "https://platypus-server.onrender.com/api";
+
+function normalizeLogsEndpoint(rawEndpoint?: string): string {
+  const base = (rawEndpoint || DEFAULT_ENDPOINT).trim().replace(/\/+$/, "");
+
+  if (base.endsWith("/v1/logs")) {
+    return base;
+  }
+  if (base.endsWith("/v1")) {
+    return `${base}/logs`;
+  }
+  if (base.endsWith("/api")) {
+    return `${base}/v1/logs`;
+  }
+  return `${base}/api/v1/logs`;
+}
 
 export class Logger {
   private readonly service: string;
-  private readonly endpoint: string;
+  private readonly logsUrl: string;
   private readonly apiKey: string;
 
   constructor(options: LoggerOptions) {
     this.service = options.service;
-    this.endpoint = (options.endpoint ?? PLATYPUS_ENDPOINT).replace(/\/$/, "");
-    this.apiKey = options.apiKey;
+    this.logsUrl = normalizeLogsEndpoint(options.endpoint);
+    this.apiKey =
+      options.apiKey ||
+      (typeof process !== "undefined" ? process.env?.PLATYPUS_API_KEY || "" : "");
+
+    if (!this.apiKey) {
+      console.warn(
+        "Platypus Logger initialized without an apiKey. Log requests will fail authentication.",
+      );
+    }
   }
 
   private async send(
@@ -33,7 +58,7 @@ export class Logger {
     };
 
     try {
-      const response = await fetch(`${this.endpoint}/v1/logs`, {
+      const response = await fetch(this.logsUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
